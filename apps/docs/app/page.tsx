@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <h1>This app is deployed to AWS</h1>
+        <h1>This app is deployed to AWS Amplify</h1>
         <Image
           className={styles.logo}
           src="/next.svg"
