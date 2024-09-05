@@ -80,7 +80,7 @@ function Documentation() {
   # Route all /dashboard requests to AWS
   location /dashboard/ {
     proxy_ssl_server_name on;
-    proxy_pass https://main.d1f3fhe8xlynm4.amplifyapp.com/;
+    proxy_pass https://main.d1f3fhe8xlynm4.amplifyapp.com;
 
     rewrite ^/dashboard/(.*)$ /$1 break;
   }
