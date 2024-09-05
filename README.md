@@ -1,80 +1,88 @@
-# How this works
-
 ## Overview
 
-This repository is a monorepo contains three applications:
-
-1. **Web**
-   - **URLs**: `/` and `/docs` (you are here!)
-   - **Deployment**: Vercel
-
-2. **Dashboard**
-   - **URL**: `/dashboard`
-   - **Deployment**: AWS
+ A repository demoing how Vercel can work with subapps and subpaths on other hosting providers. 
 
 ### Architecture
 
-All three applications are managed in a single monorepo by Turborepo, facilitating shared dependencies across the project under the `/packages` folder. The header component, as well as some other UI components are shared across the different applications.
+ This repository contains two applications, each with an independent deployement:
+
+1. **Web**
+   - **URLs**: `/` and `/docs`
+   - **Deployment**: [Vercel](https://monorepo-vercel-amplify.vercel.zone)
+
+2. **Dashboard**
+   - **URL**: `/dashboard`
+   - **Deployment**: [AWS](https://main.d1f3fhe8xlynm4.amplifyapp.com/dashboard)
+
+All three applications are managed in a single monorepo by Turborepo, facilitating shared dependencies across the project under the `/packages` folder. The header component, as well as other resources like global styles are shared across the different applications. Changes to these shared resources will cause both applications to redeploy. 
 
 ### Nginx Reverse Proxy Setup
 
-- **Purpose**: An Nginx reverse proxy has been set up on an AWS EC2 instance and is responsible for routing incoming HTTP requests to the appropriate application based on the URL path. 
-- **Configuration**:
-  - Requests to `/` are routed to **App 1** (Web Application).
-  - Requests to `/dashboard` are routed to **App 2** (Dashboard).
+ > While placing a reverse proxy in front of Vercel works here, [it is less secure and peformant and thus is NOT recommended by Vercel.](https://vercel.com/guides/can-i-use-a-proxy-on-top-of-my-vercel-deployment)
 
-This setup ensures that all three applications are accessible from a unified domain, with the reverse proxy directing traffic seamlessly between them. The Nginx `.conf` file is as follows:
+- **Purpose**: An Nginx reverse proxy has been set up on an AWS EC2 instance and placed in front of both applications. This setup ensures that all two applications are accessible from a unified domain (monorepo-vercel-amplify.com), with the reverse proxy directing traffic between them.
+- **Configuration**:
+  - Requests to `/dashboard` are routed to **App 2** (Dashboard).
+  - Requests to `/` are routed to **App 1** (Web).
+
+ The Nginx `.conf` file is as follows:
 
 ```
-server {
-    listen 80;
-    server_name monorepo-vercel-amplify.com;
-
-    # Route all requests to Vercel except /dashboard
-    location / {
-        proxy_ssl_server_name on;
-        proxy_pass https://monorepo-vercel-amplify.vercel.zone/;
-    }
-    
-    # Route all /dashboard requests to AWS
-    location /dashboard/ {
-        proxy_ssl_server_name on;        
-        proxy_pass https://main.d1f3fhe8xlynm4.amplifyapp.com;
-
-        rewrite ^/dashboard/(.*)$ /$1 break;       
-    }
-
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/monorepo-vercel-amplify.com/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/monorepo-vercel-amplify.com/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
-}
 server {
     if ($host = monorepo-vercel-amplify.com) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
 
+
+    listen 80;
+    server_name monorepo-vercel-amplify.com;
+
     return 404; # managed by Certbot
+}
+
+server {
+    listen 443 ssl;
+    server_name monorepo-vercel-amplify.com;
+
+    # Allow traffic for Let's Encrypt challenge
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;  # Adjust this path to where Certbot saves the challenge files
+    }
+
+    # Route all /dashboard requests to AWS Amplify
+    location /dashboard {
+        proxy_ssl_server_name on;        
+        proxy_pass https://main.d1f3fhe8xlynm4.amplifyapp.com/dashboard;
+    }
+
+    # Route all other requests to Vercel
+    location / {
+        proxy_ssl_server_name on;
+        proxy_pass https://monorepo-vercel-amplify.vercel.zone/;
+    }
+
+    # SSL Configuration (managed by Certbot)
+    ssl_certificate /etc/letsencrypt/live/monorepo-vercel-amplify.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/monorepo-vercel-amplify.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 }
 ```
 
 ## Using this example
 
-> [!NOTE]
 > This example uses `pnpm` as package manager.
 
 Clone the repository:
 
 ```sh
-git clone https://github.com/wude935/monorepo-vercel-amplify
+git clone https://github.com/vercel-saleseng/monorepo-vercel-amplify
 ```
 
 Install dependencies:
 
 ```sh
-cd turborepo-shadcn-ui
+cd monorepo-vercel-amplify
 pnpm install
 ```
 
@@ -104,7 +112,6 @@ If you want, you can copy an existing app with:
 pnpm turbo gen workspace --name <app-name> --copy
 ```
 
-> [!NOTE]
 > Remember to run `pnpm install` after copying an app.
 
 ### Build
@@ -112,7 +119,7 @@ pnpm turbo gen workspace --name <app-name> --copy
 To build all apps and packages, run the following command:
 
 ```sh
-cd turborepo-shadcn-ui
+cd monorepo-vercel-amplify
 pnpm build
 ```
 
@@ -121,7 +128,7 @@ pnpm build
 To develop all apps and packages, run the following command:
 
 ```sh
-cd turborepo-shadcn-ui
+cd monorepo-vercel-amplify
 pnpm dev
 ```
 
@@ -140,5 +147,5 @@ Learn more about shadcn/ui:
 
 - [Documentation](https://ui.shadcn.com/docs)
 
-Template this project is based off of:
+Original template:
 - [Repository] (https://github.com/wude935/monorepo-vercel-amplify)
