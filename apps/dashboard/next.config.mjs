@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  assetPrefix: '/dashboard',
+  basePath: '/dashboard',
   trailingSlash: true,
   transpilePackages: ["@repo/ui"],
 };
