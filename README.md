@@ -1,43 +1,118 @@
-# Turborepo starter
+# How this works
 
-This is an official starter Turborepo.
+## Overview
+
+This repository is a monorepo contains three applications:
+
+1. **Web**
+   - **URLs**: `/` and `/docs` (you are here!)
+   - **Deployment**: Vercel
+
+2. **Dashboard**
+   - **URL**: `/dashboard`
+   - **Deployment**: AWS
+
+### Architecture
+
+All three applications are managed in a single monorepo by Turborepo, facilitating shared dependencies across the project under the `/packages` folder. The header component, as well as some other UI components are shared across the different applications.
+
+### Nginx Reverse Proxy Setup
+
+- **Purpose**: An Nginx reverse proxy has been set up on an AWS EC2 instance and is responsible for routing incoming HTTP requests to the appropriate application based on the URL path. 
+- **Configuration**:
+  - Requests to `/` are routed to **App 1** (Web Application).
+  - Requests to `/dashboard` are routed to **App 2** (Dashboard).
+
+This setup ensures that all three applications are accessible from a unified domain, with the reverse proxy directing traffic seamlessly between them. The Nginx `.conf` file is as follows:
+
+```
+server {
+    listen 80;
+    server_name monorepo-vercel-amplify.com;
+
+    # Route all requests to Vercel except /dashboard
+    location / {
+        proxy_ssl_server_name on;
+        proxy_pass https://monorepo-vercel-amplify.vercel.zone/;
+    }
+    
+    # Route all /dashboard requests to AWS
+    location /dashboard/ {
+        proxy_ssl_server_name on;        
+        proxy_pass https://main.d1f3fhe8xlynm4.amplifyapp.com/;
+
+        rewrite ^/dashboard/(.*)$ /$1 break;       
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/monorepo-vercel-amplify.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/monorepo-vercel-amplify.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = monorepo-vercel-amplify.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    return 404; # managed by Certbot
+}
+```
 
 ## Using this example
 
-Run the following command:
+> [!NOTE]
+> This example uses `pnpm` as package manager.
+
+Clone the repository:
 
 ```sh
-npx create-turbo@latest
+git clone https://github.com/wude935/monorepo-vercel-amplify
 ```
 
-## What's inside?
+Install dependencies:
 
-This Turborepo includes the following packages/apps:
+```sh
+cd turborepo-shadcn-ui
+pnpm install
+```
 
-### Apps and Packages
+### Add ui components
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+Use the pre-made script:
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+```sh
+pnpm ui:add <component-name>
+```
 
-### Utilities
+> This works just like the add command in the `shadcn/ui` CLI.
 
-This Turborepo has some additional tools already setup for you:
+### Add a new app
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+Turborepo offer a simple command to add a new app:
+
+```sh
+pnpm turbo gen workspace --name <app-name>
+```
+
+This will create a new empty app in the `apps` directory.
+
+If you want, you can copy an existing app with:
+
+```sh
+pnpm turbo gen workspace --name <app-name> --copy
+```
+
+> [!NOTE]
+> Remember to run `pnpm install` after copying an app.
 
 ### Build
 
 To build all apps and packages, run the following command:
 
-```
-cd monorepo-vercel-amplify
+```sh
+cd turborepo-shadcn-ui
 pnpm build
 ```
 
@@ -45,28 +120,9 @@ pnpm build
 
 To develop all apps and packages, run the following command:
 
-```
-cd monorepo-vercel-amplify
+```sh
+cd turborepo-shadcn-ui
 pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd monorepo-vercel-amplify
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
 ```
 
 ## Useful Links
@@ -79,3 +135,10 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+
+Learn more about shadcn/ui:
+
+- [Documentation](https://ui.shadcn.com/docs)
+
+Template this project is based off of:
+- [Repository] (https://github.com/wude935/monorepo-vercel-amplify)
