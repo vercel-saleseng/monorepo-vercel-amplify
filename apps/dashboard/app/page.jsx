@@ -3,7 +3,6 @@
  * @see https://v0.dev/t/LuvGFpTK54h
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
-import Link from "next/link"
 import Header from "@repo/ui/components/header"
 import { Card, CardHeader, CardTitle, CardContent } from "@repo/ui/components/ui/card"
 

@@ -16,10 +16,10 @@ export default function NavHeader(props) {
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex-1 flex h-32 items-center justify-between p-4">
                 <div className="flex items-center space-x-4">
-                    <Link href="/" className="flex items-center gap-2" prefetch={false}>
+                    <a href="/" className="flex items-center gap-2">
                         <MountainIcon className="h-6 w-6 flex items-center" />
                         <span className="text-lg font-semibold">Zeit</span>
-                    </Link>
+                    </a>
                     <NavigationMenu>
                         <NavigationMenuList>
                             <NavigationMenuItem>
