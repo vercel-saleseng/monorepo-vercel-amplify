@@ -12,7 +12,7 @@
 
 2. **Dashboard**
    - **URL**: `/dashboard`
-   - **Deployment**: [AWS](https://main.d1f3fhe8xlynm4.amplifyapp.com/dashboard)
+   - **Deployment**: [AWS](https://main.d1lg4zxtg3ac1d.amplifyapp.com/dashboard)
 
 All three applications are managed in a single monorepo by Turborepo, facilitating shared dependencies across the project under the `/packages` folder. The header component, as well as other resources like global styles are shared across the different applications. Changes to these shared resources will cause both applications to redeploy. 
 
@@ -52,7 +52,7 @@ server {
     # Route all /dashboard requests to AWS Amplify
     location /dashboard {
         proxy_ssl_server_name on;        
-        proxy_pass https://main.d1f3fhe8xlynm4.amplifyapp.com/dashboard;
+        proxy_pass https://main.d1lg4zxtg3ac1d.amplifyapp.com/dashboard;
     }
 
     # Route all other requests to Vercel

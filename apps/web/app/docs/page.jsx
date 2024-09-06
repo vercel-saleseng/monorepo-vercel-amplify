@@ -51,7 +51,7 @@ function Documentation() {
                                 <strong>Dashboard</strong>
                                 <ul className="list-disc list-inside ml-4">
                                     <li><strong>URL</strong>: <code className="bg-gray-100 rounded px-1 font-mono">/dashboard</code></li>
-                                    <li><strong>Deployment</strong>: <Link href="https://main.d1f3fhe8xlynm4.amplifyapp.com/dashboard" className="text-blue-500 hover:underline">AWS</Link></li>
+                                    <li><strong>Deployment</strong>: <Link href="https://main.d1lg4zxtg3ac1d.amplifyapp.com/dashboard" className="text-blue-500 hover:underline">AWS</Link></li>
                                 </ul>
                             </li>
                         </ol>
@@ -111,7 +111,7 @@ server {
     # Route all /dashboard requests to AWS Amplify
     location /dashboard {
         proxy_ssl_server_name on;        
-        proxy_pass https://main.d1f3fhe8xlynm4.amplifyapp.com/dashboard;
+        proxy_pass https://main.d1lg4zxtg3ac1d.amplifyapp.com/dashboard;
     }
 
     # Route all other requests to Vercel
