@@ -7,7 +7,7 @@ import Header from "@repo/ui/components/header"
 import Link from "next/link"
 import { Card, CardHeader, CardTitle, CardContent } from "@repo/ui/components/ui/card"
 
-export default function Component() {
+export default function Dashboard() {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Header deployment="AWS"></Header>

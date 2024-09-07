@@ -239,7 +239,7 @@ server {
     )
 }
 
-export default function Component() {
+export default function Docs() {
     return (
         <div className="flex min-h-screen w-full flex-col">
             <Header deployment="Vercel"></Header>

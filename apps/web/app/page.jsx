@@ -4,13 +4,12 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 import Link from "next/link"
-import Image from 'next/image'
 import Header from "@repo/ui/components/header"
 import { buttonVariants } from "@repo/ui/components/ui/button"
 import { Card, CardContent } from "@repo/ui/components/ui/card"
 import { WalletIcon, CreditCardIcon, DollarSignIcon, QuoteIcon } from "lucide-react"
 
-export default function Component() {
+export default function Home() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <Header deployment="Vercel"></Header>
