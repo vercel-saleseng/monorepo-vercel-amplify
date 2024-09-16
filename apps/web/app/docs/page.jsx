@@ -70,7 +70,7 @@ function Documentation() {
                             <AlertTriangle className="h-4 w-4" />
                             <AlertTitle>Warning</AlertTitle>
                             <AlertDescription>
-                                While placing a reverse proxy in front of Vercel works here, <Link href="https://vercel.com/guides/can-i-use-a-proxy-on-top-of-my-vercel-deployment" className="underline">it is less secure and performant and thus is NOT recommended by Vercel.</Link>
+                                While placing a reverse proxy in front of Vercel works here, <Link href="https://vercel.com/guides/can-i-use-a-proxy-on-top-of-my-vercel-deployment" className="underline">it is less secure and performant and thus is NOT recommended by Vercel.</Link> For deployments at scale, the Nginx server also needs to be <Link href="https://vercel.com/docs/edge-network/headers#x-forwarded-for" className="underline">configured as a trusted proxy, a feature on Vercel's Enterprise plan.</Link>
                             </AlertDescription>
                         </Alert>
                         <ul className="list-disc list-inside space-y-2 mt-4 mb-4">
@@ -230,7 +230,7 @@ server {
                         </ul>
                         <p className="mb-2">Original template:</p>
                         <ul className="list-disc list-inside">
-                            <li><Link href="https://github.com/wude935/monorepo-vercel-amplify" className="text-blue-500 hover:underline">Repository</Link></li>
+                            <li><Link href="https://github.com/dan5py/turborepo-shadcn-ui" className="text-blue-500 hover:underline">Repository</Link></li>
                         </ul>
                     </CardContent>
                 </Card>

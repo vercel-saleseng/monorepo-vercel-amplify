@@ -18,7 +18,7 @@ All three applications are managed in a single monorepo by Turborepo, facilitati
 
 ### Nginx Reverse Proxy Setup
 
- > While placing a reverse proxy in front of Vercel works here, [it is less secure and peformant and thus is NOT recommended by Vercel.](https://vercel.com/guides/can-i-use-a-proxy-on-top-of-my-vercel-deployment)
+ > While placing a reverse proxy in front of Vercel works here, [it is less secure and peformant and thus is NOT recommended by Vercel.](https://vercel.com/guides/can-i-use-a-proxy-on-top-of-my-vercel-deployment) For deployments at scale, the Nginx server also needs to be [configured as a trusted proxy, a feature on Vercel's Enterprise plan.](https://vercel.com/docs/edge-network/headers#x-forwarded-for) 
 
 - **Purpose**: An Nginx reverse proxy has been set up on an AWS EC2 instance and placed in front of both applications. This setup ensures that all two applications are accessible from a unified domain (monorepo-vercel-amplify.com), with the reverse proxy directing traffic between them.
 - **Configuration**:
@@ -148,4 +148,4 @@ Learn more about shadcn/ui:
 - [Documentation](https://ui.shadcn.com/docs)
 
 Original template:
-- [Repository] (https://github.com/wude935/monorepo-vercel-amplify)
+- [Repository](https://github.com/dan5py/turborepo-shadcn-ui)
